@@ -38,8 +38,7 @@
        withClientId:nil
      securityPolicy:[MQTTTestHelpers securityPolicy:parameters]
        certificates:[MQTTTestHelpers clientCerts:parameters]
-      protocolLevel:[parameters[@"protocollevel"] intValue]
-            runLoop:[NSRunLoop currentRunLoop]];
+      protocolLevel:[parameters[@"protocollevel"] intValue]];
 }
 
 @end
@@ -65,9 +64,9 @@
 }
 
 - (void)testMQTTSessionManager:(BOOL)clean {
-    for (NSString *broker in self.brokers.allKeys) {
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogInfo(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         if ([parameters[@"websocket"] boolValue]) {
             continue;
         }
@@ -155,9 +154,9 @@
 
 - (void)testMQTTSessionManagerPersistent {
     [MQTTLog setLogLevel:DDLogLevelInfo];
-    for (NSString *broker in self.brokers.allKeys) {
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogInfo(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         if ([parameters[@"websocket"] boolValue]) {
             continue;
         }
@@ -244,9 +243,9 @@
 
 - (void)testSessionManagerShort {
     [MQTTLog setLogLevel:DDLogLevelInfo];
-    for (NSString *broker in self.brokers.allKeys) {
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogInfo(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         if ([parameters[@"websocket"] boolValue]) {
             continue;
         }
@@ -313,9 +312,9 @@
 
 - (void)testSessionManagerALotSubscriptions {
     [MQTTLog setLogLevel:DDLogLevelInfo];
-    for (NSString *broker in self.brokers.allKeys) {
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogInfo(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         if ([parameters[@"websocket"] boolValue]) {
             continue;
         }
@@ -611,10 +610,19 @@
     }
 }
 
+- (void)testMQTTSessionManagerDestoryedWhenDeallocated {
+    __weak MQTTSessionManager *weakManager = nil;
+    @autoreleasepool {
+        MQTTSessionManager *manager = [[MQTTSessionManager alloc] init];
+        weakManager = manager;
+    }
+    XCTAssertNil(weakManager);
+}
+
 - (void)testMQTTSessionManagerRecconnectionWithConnectToLast {
-    for (NSString *broker in self.brokers.allKeys) {
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogInfo(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         if ([parameters[@"websocket"] boolValue]) {
             continue;
         }

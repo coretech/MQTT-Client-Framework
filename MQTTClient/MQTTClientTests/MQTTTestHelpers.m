@@ -11,36 +11,56 @@
 #import "MQTTCFSocketTransport.h"
 #import "MQTTInMemoryPersistence.h"
 #import "MQTTCoreDataPersistence.h"
-#import "MQTTWebsocketTransport.h"
+//#import "MQTTWebsocketTransport.h"
 #import "MQTTSSLSecurityPolicy.h"
 #import "MQTTSSLSecurityPolicyTransport.h"
 
 @implementation MQTTTestHelpers
 
-- (void)setUp {
-    [super setUp];
+static NSDictionary *brokers = nil;
+static NSDictionary *allBrokers = nil;
 
-#ifdef LUMBERJACK
-#ifdef DEBUG
-    [DDLog addLogger:[DDTTYLogger sharedInstance] withLevel:DDLogLevelVerbose];
-#else
-    [DDLog addLogger:[DDTTYLogger sharedInstance] withLevel:DDLogLevelWarning];
-#endif
-#endif
-    
++ (NSDictionary *)brokers {
+    if (brokers == nil) {
+        brokers = [MQTTTestHelpers loadBrokers];
+    }
+    return brokers;
+}
+
++ (NSDictionary *)allBrokers {
+    if (allBrokers == nil) {
+        allBrokers = [MQTTTestHelpers loadAllBrokers];
+    }
+    return allBrokers;
+}
+
++ (NSDictionary *)loadAllBrokers {
+    NSURL *url = [[NSBundle bundleForClass:[MQTTTestHelpers class]] URLForResource:@"MQTTTestHelpers"
+                                                                     withExtension:@"plist"];
+    NSDictionary *plist = [NSDictionary dictionaryWithContentsOfURL:url];
+    NSDictionary *plistBrokers = plist[@"brokers"];
+    return plistBrokers;
+}
+
++ (NSDictionary *)loadBrokers {
     NSURL *url = [[NSBundle bundleForClass:[MQTTTestHelpers class]] URLForResource:@"MQTTTestHelpers"
                                                                      withExtension:@"plist"];
     NSDictionary *plist = [NSDictionary dictionaryWithContentsOfURL:url];
     NSArray *brokerList = plist[@"brokerList"];
-    NSDictionary *brokers = plist[@"brokers"];
-
-    self.brokers = [[NSMutableDictionary alloc] init];
+    NSDictionary *plistBrokers = plist[@"brokers"];
+    
+    NSMutableDictionary *brokers = [[NSMutableDictionary alloc] init];
     for (NSString *brokerName in brokerList) {
-        NSDictionary *broker = brokers[brokerName];
+        NSDictionary *broker = plistBrokers[brokerName];
         if (broker) {
-            (self.brokers)[brokerName] = broker;
+            brokers[brokerName] = broker;
         }
     }
+    return brokers;
+}
+
+- (void)setUp {
+    [super setUp];
 
     self.timer = [NSTimer scheduledTimerWithTimeInterval:1
                                                   target:self
@@ -277,6 +297,9 @@
     id<MQTTTransport> transport;
     
     if ([parameters[@"websocket"] boolValue]) {
+        NSException *exception = [NSException exceptionWithName:@"WebSockets tests currently disabled" reason:@"" userInfo:nil];
+        @throw exception;
+        /*
         MQTTWebsocketTransport *websocketTransport = [[MQTTWebsocketTransport alloc] init];
         websocketTransport.host = parameters[@"host"];
         websocketTransport.port = [parameters[@"port"] intValue];
@@ -287,6 +310,7 @@
         websocketTransport.allowUntrustedCertificates = [parameters[@"allowUntrustedCertificates"] boolValue];
 
         transport = websocketTransport;
+         */
     } else {
         MQTTSSLSecurityPolicy *securityPolicy = [MQTTTestHelpers securityPolicy:parameters];
         if (securityPolicy) {

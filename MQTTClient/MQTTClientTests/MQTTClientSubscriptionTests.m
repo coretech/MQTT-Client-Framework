@@ -31,9 +31,9 @@
 - (void)testSubscribeWMultipleTopics_None_MQTT_3_8_3_3 {
     MQTTStrict.strict = FALSE;
 
-    for (NSString *broker in self.brokers.allKeys) {
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testMultiSubscribeCloseExpected:@{}];
         [self shutdown:parameters];
@@ -41,12 +41,12 @@
 }
 
 - (void)testSubscribeWMultipleTopics_None_strict {
-    MQTTStrict.strict = TRUE;
-
-    for (NSString *broker in self.brokers.allKeys) {
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
+        MQTTStrict.strict = NO;
         [self connect:parameters];
+        MQTTStrict.strict = YES;
         @try {
             [self testMultiSubscribeCloseExpected:@{}];
         } @catch (NSException *exception) {
@@ -59,9 +59,10 @@
 }
 
 - (void)testSubscribeWMultipleTopics_One {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testMultiSubscribeSubackExpected:@{@"MQTTClient": @(2)}];
         [self shutdown:parameters];
@@ -69,9 +70,10 @@
 }
 
 - (void)testSubscribeWMultipleTopics_more {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testMultiSubscribeSubackExpected:@{@"MQTTClient": @(0), @"MQTTClient/abc": @(0), @"MQTTClient/#": @(1)}];
         [self shutdown:parameters];
@@ -79,9 +81,10 @@
 }
 
 - (void)testSubscribeWMultipleTopics_16_to_256 {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         for (int TOPICS = 16; TOPICS <= 256; TOPICS += 16) {
             NSMutableDictionary *topics = [[NSMutableDictionary alloc] initWithCapacity:TOPICS];
@@ -96,9 +99,10 @@
 }
 
 - (void)testSubscribeQoS0 {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testSubscribeSubackExpected:@"MQTTClient/#" atLevel:0];
         [self shutdown:parameters];
@@ -106,9 +110,10 @@
 }
 
 - (void)testSubscribeQoS1 {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testSubscribeSubackExpected:@"MQTTClient/#" atLevel:1];
         [self shutdown:parameters];
@@ -116,9 +121,10 @@
 }
 
 - (void)testSubscribeQoS2 {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testSubscribeSubackExpected:@"MQTTClient/#" atLevel:2];
         [self shutdown:parameters];
@@ -126,9 +132,10 @@
 }
 
 - (void)testSubscribeTopicPlain {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testSubscribeSubackExpected:@"MQTTClient" atLevel:0];
         [self shutdown:parameters];
@@ -136,9 +143,10 @@
 }
 
 - (void)testSubscribeTopicHash {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testSubscribeSubackExpected:@"MQTTClient/#" atLevel:0];
         [self shutdown:parameters];
@@ -146,9 +154,10 @@
 }
 
 - (void)testSubscribeTopicHashnotalone_MQTT_4_7_1_2 {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         NSString *topic = @"#MQTTClient";
         DDLogVerbose(@"subscribing to topic %@", topic);
@@ -157,10 +166,12 @@
     }
 }
 
-- (void)testSubscribeTopicEmpty_MQTT_4_7_3_1 {
-    for (NSString *broker in self.brokers.allKeys) {
+// All Topic Names and Topic Filters MUST be at least one character long [MQTT-4.7.3-1]
+- (void)testSubscribeEmptyTopicClosesConnection {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testSubscribeCloseExpected:@"" atLevel:0];
         [self shutdown:parameters];
@@ -168,9 +179,10 @@
 }
 
 - (void)testSubscribeTopicHashnotlast_MQTT_4_7_1_2 {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testSubscribeCloseExpected:@"MQTTClient/#/def" atLevel:0];
         [self shutdown:parameters];
@@ -178,11 +190,13 @@
 }
 
 - (void)testSubscribeTopicHashnotlast_strict {
-    MQTTStrict.strict = TRUE;
-    for (NSString *broker in self.brokers.allKeys) {
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
+        // Set it to no to allow to connect in non strict mode
+        MQTTStrict.strict = NO;
         [self connect:parameters];
+        MQTTStrict.strict = YES;
         @try {
             [self testSubscribeCloseExpected:@"MQTTClient/#/def" atLevel:0];
         } @catch (NSException *exception) {
@@ -195,9 +209,10 @@
 }
 
 - (void)testSubscribeTopicPlus {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testSubscribeSubackExpected:@"+" atLevel:0];
         [self shutdown:parameters];
@@ -205,9 +220,10 @@
 }
 
 - (void)testSubscribeTopicSlash {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testSubscribeSubackExpected:@"/" atLevel:0];
         [self shutdown:parameters];
@@ -215,9 +231,10 @@
 }
 
 - (void)testSubscribeTopicPlusnotalone_MQTT_4_7_1_3 {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         NSString *topic = @"MQTTClient+";
         DDLogVerbose(@"subscribing to topic %@", topic);
@@ -227,9 +244,10 @@
 }
 
 - (void)testSubscribeTopicNone_MQTT_3_8_3_3 {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testSubscribeCloseExpected:nil atLevel:0];
         [self shutdown:parameters];
@@ -237,9 +255,10 @@
 }
 
 - (void)testSubscribeWildcardSYS_MQTT_4_7_2_1 {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testSubscribeSubackExpected:@"+/#" atLevel:0];
 
@@ -263,9 +282,10 @@
 }
 
 - (void)testSubscribeLong_MQTT_4_7_3_3 {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         
         NSString *topic = @"aa";
@@ -323,9 +343,10 @@
 
 
 - (void)testSubscribeSameTopicDifferentQoS_MQTT_3_8_4_3 {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testSubscribeSubackExpected:TOPIC atLevel:0];
         [self testSubscribeSubackExpected:TOPIC atLevel:1];
@@ -341,9 +362,10 @@
  * The Server MUST deliver the message to the Client respecting the maximum QoS of all the matching subscriptions.
  */
 - (void)test_delivery_max_QoS_MQTT_3_3_5_1 {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testSubscribeSubackExpected:[NSString stringWithFormat:@"%@/#", TOPIC] atLevel:MQTTQosLevelAtMostOnce];
         [self testSubscribeSubackExpected:[NSString stringWithFormat:@"%@/2", TOPIC] atLevel:MQTTQosLevelExactlyOnce];
@@ -363,9 +385,10 @@
  * is deleted, otherwise no additional processing occurs.
  */
 - (void)test_unsubscribe_byte_by_byte_MQTT_3_10_4_1 {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testSubscribeSubackExpected:TOPIC atLevel:MQTTQosLevelAtMostOnce];
         [self testUnsubscribeTopic:TOPIC];
@@ -378,9 +401,10 @@
  * If a Server deletes a Subscription It MUST stop adding any new messages for delivery to the Client.
  */
 - (void)test_stop_delivering_after_unsubscribe_MQTT_3_10_4_2 {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testSubscribeSubackExpected:TOPIC atLevel:MQTTQosLevelAtMostOnce];
         [self.session publishAndWaitData:[@"Should be delivered" dataUsingEncoding:NSUTF8StringEncoding]
@@ -402,9 +426,10 @@
  * QoS 2 messages which it has started to send to the Client.
  */
 - (void)test_complete_delivering_qos12_after_unsubscribe_MQTT_3_10_4_3 {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testSubscribeSubackExpected:TOPIC atLevel:MQTTQosLevelExactlyOnce];
         [self.session publishAndWaitData:[@"Should be delivered" dataUsingEncoding:NSUTF8StringEncoding]
@@ -422,9 +447,10 @@
 
 
 - (void)testUnsubscribeTopicPlain {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testUnsubscribeTopic:@"abc"];
         [self shutdown:parameters];
@@ -432,9 +458,10 @@
 }
 
 - (void)testUnubscribeTopicHash {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = NO;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testUnsubscribeTopic:@"#"];
         [self shutdown:parameters];
@@ -442,9 +469,10 @@
 }
 
 - (void)testUnsubscribeTopicHashnotalone_MQTT_4_7_1_2 {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testUnsubscribeTopicCloseExpected:@"#abc"];
         [self shutdown:parameters];
@@ -452,12 +480,12 @@
 }
 
 - (void)testUnsubscribeTopicHashnotalone_strict {
-    MQTTStrict.strict = TRUE;
-
-    for (NSString *broker in self.brokers.allKeys) {
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
+        MQTTStrict.strict = NO;
         [self connect:parameters];
+        MQTTStrict.strict = YES;
         @try {
             [self testUnsubscribeTopicCloseExpected:@"#abc"];
         } @catch (NSException *exception) {
@@ -470,9 +498,10 @@
 }
 
 - (void)testUnsubscribeTopicPlus {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testUnsubscribeTopic:@"+"];
         [self shutdown:parameters];
@@ -480,9 +509,10 @@
 }
 
 - (void)testUnsubscribeTopicEmpty_MQTT_4_7_3_1 {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testUnsubscribeTopicCloseExpected:@""];
         [self shutdown:parameters];
@@ -490,19 +520,22 @@
 }
 
 - (void)testUnsubscribeTopicNone_MQTT_3_10_3_2 {
-    for (NSString *broker in self.brokers.allKeys) {
-        DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
-        [self connect:parameters];
-        [self testUnsubscribeTopicCloseExpected:nil];
-        [self shutdown:parameters];
-    }
+    MQTTStrict.strict = FALSE;
+    // Test specifically with emqtt because there is a bug
+    // in mosquitto: https://github.com/eclipse/mosquitto/issues/665
+    NSString *broker = @"emqtt";
+    DDLogVerbose(@"testing broker %@", broker);
+    NSDictionary *parameters = MQTTTestHelpers.allBrokers[broker];
+    [self connect:parameters];
+    [self testUnsubscribeTopicCloseExpected:nil];
+    [self shutdown:parameters];
 }
 
 - (void)testUnsubscribeTopicZero_MQTT_4_7_3_1 {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testUnsubscribeTopic:@"a\0b"];
         [self shutdown:parameters];
@@ -510,19 +543,22 @@
 }
 
 - (void)testMultiUnsubscribe_None_MQTT_3_10_3_2 {
-    for (NSString *broker in self.brokers.allKeys) {
-        DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
-        [self connect:parameters];
-        [self testMultiUnsubscribeTopicCloseExpected:@[]];
-        [self shutdown:parameters];
-    }
+    MQTTStrict.strict = FALSE;
+    // Test specifically with emqtt because there is a bug
+    // in mosquitto: https://github.com/eclipse/mosquitto/issues/665
+    NSString *broker = @"emqtt";
+    DDLogVerbose(@"testing broker %@", broker);
+    NSDictionary *parameters = MQTTTestHelpers.allBrokers[broker];
+    [self connect:parameters];
+    [self testMultiUnsubscribeTopicCloseExpected:@[]];
+    [self shutdown:parameters];
 }
 
 - (void)testMultiUnsubscribe_One {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testMultiUnsubscribeTopic:@[@"abc"]];
         [self shutdown:parameters];
@@ -530,9 +566,10 @@
 }
 
 - (void)testMultiUnsubscribe_more {
-    for (NSString *broker in self.brokers.allKeys) {
+    MQTTStrict.strict = FALSE;
+    for (NSString *broker in MQTTTestHelpers.brokers.allKeys) {
         DDLogVerbose(@"testing broker %@", broker);
-        NSDictionary *parameters = self.brokers[broker];
+        NSDictionary *parameters = MQTTTestHelpers.brokers[broker];
         [self connect:parameters];
         [self testMultiUnsubscribeTopic:@[@"abc", @"ab/+/ef", @"+", @"#", @"abc/df", @"a/b/c/#"]];
         [self shutdown:parameters];
@@ -569,14 +606,12 @@
     }
 }
 
-- (void)testSubscribeCloseExpected:(NSString *)topic atLevel:(UInt8)qos
-{
+- (void)testSubscribeCloseExpected:(NSString *)topic atLevel:(UInt8)qos {
     [self testSubscribe:topic atLevel:qos];
     XCTAssertFalse(self.timedout, @"No close within %f seconds", self.timeoutValue);
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
-    if (self.event == MQTTSessionEventConnectionClosedByBroker) {
+    if (self.event == MQTTSessionEventConnectionClosedByBroker || self.event == MQTTSessionEventConnectionClosed) {
         XCTAssert(self.subMid == 0, @"SUBACK received");
-        XCTAssert(self.event == MQTTSessionEventConnectionClosedByBroker, @"Event %ld happened", (long)self.event);
     } else {
         XCTAssertEqual(self.subMid, self.sentSubMid, @"msgID(%d) in SUBACK does not match msgID(%d) in SUBSCRIBE [MQTT-3.8.4-2]", self.subMid, self.sentSubMid);
         for (NSNumber *qos in self.qoss) {
@@ -590,13 +625,13 @@
     [self testMultiSubscribe:topics];
     XCTAssertFalse(self.timedout, @"No close within %f seconds", self.timeoutValue);
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
-    if (self.event == MQTTSessionEventConnectionClosedByBroker) {
+    if (self.event == MQTTSessionEventConnectionClosedByBroker || self.event == MQTTSessionEventConnectionClosed) {
         XCTAssert(self.subMid == 0, @"SUBACK received");
-        XCTAssert(self.event == MQTTSessionEventConnectionClosedByBroker, @"Event %ld happened", (long)self.event);
-    }
-    XCTAssertEqual(self.subMid, self.sentSubMid, @"msgID(%d) in SUBACK does not match msgID(%d) in SUBSCRIBE [MQTT-3.8.4-2]", self.subMid, self.sentSubMid);
-    for (NSNumber *qos in self.qoss) {
-        XCTAssertEqual([qos intValue], 0x80, @"Returncode in SUBACK is not 0x80");
+    } else {
+        XCTAssertEqual(self.subMid, self.sentSubMid, @"msgID(%d) in SUBACK does not match msgID(%d) in SUBSCRIBE [MQTT-3.8.4-2]", self.subMid, self.sentSubMid);
+        for (NSNumber *qos in self.qoss) {
+            XCTAssertEqual([qos intValue], 0x80, @"Returncode in SUBACK is not 0x80");
+        }
     }
 }
 
@@ -682,7 +717,7 @@
     }
     XCTAssertFalse(self.timedout, @"No close within %f seconds",self.timeoutValue);
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
-    XCTAssert(self.event == MQTTSessionEventConnectionClosedByBroker, @"Event %ld happened", (long)self.event);
+    XCTAssert(self.event == MQTTSessionEventConnectionClosedByBroker || self.event == MQTTSessionEventConnectionClosed, @"Event %ld happened", (long)self.event);
 }
 
 - (void)testMultiUnsubscribeTopic:(NSArray *)topics
@@ -720,7 +755,7 @@
     }
     XCTAssertFalse(self.timedout, @"No close within %f seconds",self.timeoutValue);
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
-    XCTAssert(self.event == MQTTSessionEventConnectionClosedByBroker, @"Event %ld happened", (long)self.event);
+    XCTAssert(self.event == MQTTSessionEventConnectionClosedByBroker || self.event == MQTTSessionEventConnectionClosed, @"Event %ld happened", (long)self.event);
 }
 
 - (void)connect:(NSDictionary *)parameters {
