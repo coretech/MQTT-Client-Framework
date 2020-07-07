@@ -15,6 +15,7 @@ let package = Package(
     targets: [
         .target(
             name: "MQTTClient",
-            path: "MQTTClient/MQTTClient")
+            path: "MQTTClient/MQTTClient",
+            publicHeadersPath: "")
     ]
 )
