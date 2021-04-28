@@ -25,6 +25,7 @@
 #import <MQTTCFSocketTransport.h>
 #import <MQTTCoreDataPersistence.h>
 #import <MQTTSSLSecurityPolicyTransport.h>
+#import <MQTTLog.h>
 #import <MQTTSessionManager.h>
 
 //! Project version number for MQTTClient.
